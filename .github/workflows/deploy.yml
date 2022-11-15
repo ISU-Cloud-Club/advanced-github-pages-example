@@ -19,13 +19,13 @@ jobs:
     - name: Upload files in src folder
       uses: actions/upload-pages-artifact@v0
       with:
-        path: ./docs
+        path: ./src
         retention-days: 1
     - name: Compress artifact
       run: |
           tar \
             --dereference --hard-dereference \
-            --directory ./docs \
+            --directory ./src \
             -cvf /home/runner/work/_temp/artifact.tar \
             --exclude=.git \
             .
