@@ -1,0 +1,12 @@
+#navbar {
+  font-weight: bold;
+}
+
+#navbar a {
+  color: #000000;
+}
+
+#navbar p.active a {
+  color: #FF0000;
+  text-decoration: none;
+}

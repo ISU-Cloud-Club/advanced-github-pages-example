@@ -1,0 +1,48 @@
+name: Deploy GitHub pages
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_website:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload files in src folder
+      uses: actions/upload-pages-artifact@v0
+      with:
+        path: ./docs
+        retention-days: 1
+    - name: Compress artifact
+      run: |
+          tar \
+            --dereference --hard-dereference \
+            --directory ./docs \
+            -cvf /home/runner/work/_temp/artifact.tar \
+            --exclude=.git \
+            .
+    - name: Upload artifact
+      uses: actions/upload-artifact@main
+      with:
+        name: github-pages  
+        path: /home/runner/work/_temp/artifact.tar
+        retention-days: 1
+        if-no-files-found: warn
+    - name: Deploy artifact
+      id: deployment
+      uses: actions/deploy-pages@v1
+      with:
+        emit_telemetry: false
+        token: ${{ secrets.GITHUB_TOKEN }}
+        timeout: 600000
+        error_count: 10
+        reporting_interval: 5000
+
